@@ -1,0 +1,375 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                 %%
+%% Please do not use \input{...} to include other tex files.       %%
+%% Submit your LaTeX manuscript as one .tex document.              %%
+%%                                                                 %%
+%% All additional figures and files should be attached             %%
+%% separately and not embedded in the \TeX\ document itself.       %%
+%%                                                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%\documentclass[referee,sn-basic]{sn-jnl}% referee option is meant for double line spacing
+
+%%=======================================================%%
+%% to print line numbers in the margin use lineno option %%
+%%=======================================================%%
+
+%%\documentclass[lineno,sn-basic]{sn-jnl}% Basic Springer Nature Reference Style/Chemistry Reference Style
+
+%%======================================================%%
+%% to compile with pdflatex/xelatex use pdflatex option %%
+%%======================================================%%
+
+%%\documentclass[pdflatex,sn-basic]{sn-jnl}% Basic Springer Nature Reference Style/Chemistry Reference Style
+
+\documentclass[sn-basic]{sn-jnl}% Basic Springer Nature Reference Style/Chemistry Reference Style
+
+%%%% Standard Packages
+%%<additional latex packages if required can be included here>
+%\usepackage{amsmath}
+%\usepackage{amsfonts}
+%\usepackage[normalem]{ulem}
+%%%%
+
+\jyear{2022}%
+
+%% as per the requirement new theorem styles can be included as shown below
+\theoremstyle{thmstyleone}%
+\newtheorem{theorem}{Theorem}%  meant for continuous numbers
+%%\newtheorem{theorem}{Theorem}[section]% meant for sectionwise numbers
+%% optional argument [theorem] produces theorem numbering sequence instead of independent numbers for Proposition
+\newtheorem{proposition}[theorem]{Proposition}% 
+%%\newtheorem{proposition}{Proposition}% to get separate numbers for theorem and proposition etc.
+
+\theoremstyle{thmstyletwo}%
+\newtheorem{example}{Example}%
+\newtheorem{remark}{Remark}%
+
+\theoremstyle{thmstylethree}%
+\newtheorem{definition}{Definition}%
+
+\raggedbottom
+%%\unnumbered% uncomment this for unnumbered level heads
+
+\begin{document}
+
+\title[Image Annotation Tool]{IAT: a deep learning based system for interactive annotation of image datasets}
+
+\author*[1]{\fnm{Antonio} \sur{Goulart}}\email{antonio.goulart@usp.br}
+
+\author[1]{\fnm{Alexandre} \sur{Morimitsu}}\email{alexandre.morimitsu@gmail.com}
+%\equalcont{These authors contributed equally to this work.}
+
+\author[1]{\fnm{Nina} \sur{Hirata}}\email{nina@ime.usp.br}
+%\equalcont{These authors contributed equally to this work.}
+
+\affil*[1]{\orgdiv{Computer Science Department}, \orgname{Institute of Mathematics and Statistics}, \orgaddress{\street{1010 Rua do Matão}, \city{S\~{a}o Paulo}, \postcode{05508-090}, \state{SP}, \country{Brazil}}}
+
+%%\affil[2]{\orgdiv{Computer Science Department}, \orgname{Organization}, \orgaddress{\street{Street}, \city{City}, \postcode{10587}, \state{State}, \country{Country}}}
+
+%%\affil[3]{\orgdiv{Computer Science Department}, \orgname{Organization}, \orgaddress{\street{Street}, \city{City}, \postcode{610101}, \state{State}, \country{Country}}}
+
+%%==================================%%
+%% sample for unstructured abstract %%
+%%==================================%%
+
+\abstract{In this paper we present a system for interactive annotation of image datasets. The main use cases with such a tool are labeling of raw datasets and inspection of labels from previously annotated datasets. The system is based on a deep learning pipeline to extract high-dimensional features maps from the images and a subsequent dimensionality reduction stage so the images can be represented as points in a 2D projection and as piecewise linear curves in a parallel coordinates representation. Similar images (therefore, possibly from a same class) will form clusters in the 2D projection while also presenting similar patterns in the curves. A graphical user interface was designed to enable a user to manually select batches of samples, scrutinize and filter the selection, and finally label the batches in a quick fashion. This process is repeated until all the samples are labeled (or corrected, in the case of a inspection). In order to assess the user experience we perform study cases with plankton image datasets, tackling both the labeling and the inspection cases. Highlights of the development process of the system will be detailed, such as comparisons of the 2D projections achieved using different configurations for the system (convolutional neural network architectures, deepness of layers chosen as feature maps, (dis)similarity of datasets used for training and labeling/inspection). The comparisons explore the silhouette score, which considers the inter- and intra-class distances and can be used as an indication of ease of interaction with the system.}
+
+%%================================%%
+%% Sample for structured abstract %%
+%%================================%%
+
+% \abstract{\textbf{Purpose:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
+% 
+% \textbf{Methods:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
+% 
+% \textbf{Results:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
+% 
+% \textbf{Conclusion:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.}
+
+\keywords{Deep learning, Visual interactive labeling, Dataset annotation}
+
+%%\pacs[JEL Classification]{D8, H51}
+
+%%\pacs[MSC Classification]{35A01, 65L10, 65L12, 65L20, 65L70}
+
+\maketitle
+
+\section{Introduction}\label{sec1}
+
+Images are a particular kind of data in the current Big Data era, produced in vast amounts by widespread smartphones, internet of things devices, professional equipment for photography and video making, and setups for monitoring in industrial, environmental and scientific contexts. They are, in particular, a rich source of information and thus there is an ever increasing interest in methods and systems that are able to reliably extract useful information from them. The main challenge for extracting information from images and videos is, however, the unstructured nature of these types of data, which requires non-trivial algorithms.
+
+Not long ago, signal/image processing tasks were tackled with heuristically built specific pipelines. Although machine learning algorithms helped the achievement of some degree of automation, training these algorithms depended on features extracted from the images. Thus, for some period, feature engineering and feature extraction became the central subject of investigation. Despite the advances achieved, customized feature sets and pipelines had limited application scope. With the rise of modern machine learning techniques~\citep{goodfellow-book}, specially deep neural networks (DNN), a significative advance in this regard has been achieved. These networks are able to solve diverse image processing tasks such as classification, object detection or semantic segmentation in an end-to-end fashion, without the need of explicitly computing image features or designing customized pipelines. In a sense, deep neural networks are able to learn rich discriminative representations directly from raw data through the supervised training process.
+
+However, robustly training these networks requires a vast amount of labelled data. Labelling such datasets is a costly task. To mitigate this issue, several approaches such as data augmentation, transfer learning or self-supervision have been proposed. In spite of their effectiveness being demonstrated, labelled data is still necessary to perform fine tuning of pre-trained models, for evaluating techniques, or validating or monitoring the performance of a trained model when it is applied on new data. Thus, a challenge that is posed in front of us is how to facilitate image labelling and label inspection in this Big Data scenario.
+
+With this challenge in mind, in this work we investigate the potential of a combined use of deep neural networks and the t-distributed stochastic neighbor embedding (t-SNE)~\citep{tsne-paper} projection technique. Our study is inserted in the context of an envisaged visual interactive labelling framework. The idea of interactive labelling can be built on the idea of active learning with ``user in the loop''. The key idea of the original active learning approach~\citep{settles-book} consisted in, rather than labelling the full dataset before classifier training, iteratively selecting a few of the most informative samples and asking the user to label only those samples, train a classifier on the samples labelled so far, and iterating this process. The notion of being informative is related to how much the selected samples will contribute to improve classifier performance after another round of training. In this approach, a user plays only a passive role of simply labelling the samples selected by the algorithm. It is expected that after iterating some rounds, the classification accuracy will reach the same level as the one that would be achieved by training on the full dataset. A complementary perspective for active learning is based on visual analytics~\citep{wong-paper-va}. To build a visual map of a dataset, deep neural networks can be used to compute highly discriminative representations of the images. Then t-SNE can be used to project the high dimensional data onto a 2D map. Intuitively, one may imagine images with similar contents lying close to each other in the high dimensional feature space, and the data distribution structure being somehow preserved in the projection map. By visually analyzing these 2D projection maps and interacting with individual or groups of data points, users can play a more active role in data labelling and label inspection processes~\citep{bernard-paper-vial}.
+
+In this work we would like to understand if the choice of a DNN architecture or of a specific layer of the network for feature extraction should be a concerning issue. If so, how can one decide which is most suited? We also have a particular interest in investigating how well objects of a new class, not present in the network training set, or objects of another dataset (i.e., same domain, but distinct distribution) will be projected. The quality of the projections, i.e., how easy it is to interact with the set of projected data points from a user point of view is a relevant question. In this regard, we propose to investigate the relation between subjective assessment (authors personal impression) and the objective index known as silhouette score~\citep{rousseeuw-silhouette}.
+
+The study reported here was conducted with plankton images (see some examples in {\bf Figure~\ref{fig:datasets}}). Current plankton imaging technology are able to sample as fast as 160 liters every second~\citep{cowen-paper-isiis}, producing an ocean of data. In recent years a lot of studies explored deep learning in the context of plankton image analysis~\citep{luo-paper2018,dai-zooplanktonet,sms-lowshot,qi-lowshot,lumini-paper,orenstein-transferlearning}.
+
+\begin{figure*}
+\centerline{\includegraphics[width=\textwidth]{figs/datasets.png}}
+\caption{Samples from WHOI-ASLO (left / grey background) and Kaggle (right / white background) datasets.}
+\label{fig:datasets}
+\end{figure*}
+
+Within the plankton image classification context, active learning based methods were used in~\citep{luo-paper-al} and in~\citep{bochinski-paper}, showing that only a few thousand labels are enough for the CNN to achieve satisfactory accuracy, comparable to manual routine analysis of zooplankton samples. A visual interactive labelling approach is proposed in MorphoCluster~\citep{morphocluster-paper}. The system aggregates similar images into clusters, which are then validated by the user. Subsequently the system algorithmically grows the clusters, again to be validated by the user in an interactive process. Notice that while MorphoCluster automatically performs clustering, we envisage a framework with high quality projections where groups of similar images will be projected closely to each other in the 2D map. A user could then quickly segment the more obvious groups (or clusters), and subsequently inspect the more fuzzy regions in the projection. This process can then be iterated until the full dataset is annotated.
+
+Next we present the methods employed in this study, including a brief description of deep learning architectures, t-SNE projection, and silhouette score, followed by the experiments with results and discussions, and the conclusions at the end.
+
+
+\section{Methods}
+
+We use trained deep neural networks to extract a set of high-dimension feature vectors from a set of images, and then use t-SNE to project the extracted features onto a 2D plane. Distinct combination of network models and sets of data are then tested to evaluate and discuss projection quality, which are assessed objectively by means of the silhouette score. This section describe these tools.
+
+
+\subsection{Convolutional Neural Networks}
+
+Convolutional Neural Networks (CNN) employ convolution kernels to connect a group of inputs (pixels in the context of image processing) to a neuron in a subsequent layer. In such a way, instead of collapsing the relative positions of these inputs, which are related to spatial information, CNNs enable the learning of feature maps, which will be specific to a training context. Earlier layers in a network learn more general, low level features, while the later layers are able to combine that information and recognize more high-level patterns.
+
+Different neural network architectures are already established as readily available tools for computer vision tasks. In this work we considered three complementary configurations.
+
+\subsubsection{VGG}
+The VGG architecture~\citep{vgg-paper} resembles a conventional CNN architecture, featuring blocks composed of a stack of convolutional layers and a pooling layer to progressively reduce the spatial dimension. The last convolutional layer neurons are connected to a fully connected layer, which for classification applications, is then connected to a final softmax layer. The kernel size is 3x3 through the whole architecture, bringing conciseness and also acting as a regularization mechanism, since it naturally keeps the number of parameters small.
+
+
+\subsubsection{MobileNet}
+In some cases where available computational power is an issue, dealing with a regular CNN like the VGG might be a problem. The MobileNet~\citep{mobilenet-paper} features a clever scheme based on the separation of the convolutions: given an input with many channels, first we have one separate convolution filter for each input channel (depth-wise), followed by 1x1 (point-wise) convolutions across the channels, to combine the outputs (learned features) from the previous step. In such a way, instead of performing both filtering and features combinations at the same time, like the regular convolution, the separation of the process in depth-wise and point-wise steps greatly reduces the total number of operations.
+
+
+\subsubsection{Inception ResNet}
+An important challenge when dealing with convolutional neural networks for image processing is choosing a suitable kernel size. While small kernel sizes (like the 3x3 on VGG) are computationally cheaper and focus on local information through the input image, bigger kernel sizes are more expensive and look for information distributed more globally. 
+
+Inception networks~\citep{inception-paper} are based on the idea of relying on wideness rather than deepness. This is implemented by means of inception modules, which are parallel combinations of convolutions kernels with different sizes, that are then concatenated so the information can proceed to the next layer. Besides enabling the exploration of different textures and scales in the images, going wide instead of deep also contributes to diminish the vanishing gradient problem that affects the earlier layers in deep networks.
+
+Residual networks explore a different mechanism to cope with the vanishing gradient. Instead of a straight connection between two convolutional layers, the trick is using an extra shortcut connection (which performs and identity mapping, to be added to the regular output from the subsequent convolutional layer). It is also possible to skip some layers with such a bypass scheme.
+
+
+\subsection{t-SNE for dimensionality reduction}
+
+Dimensionality reduction techniques aim at mapping a set of data points $X = \{x_1, \ldots, x_n\}$ in a high-dimensional space onto a set of map points $Y = \{y_1, \ldots, y_n\}$ with reduced dimensionality, preserving the overall dispersion of the original data points. A popular method for dimensionality reduction is the t-distributed stochastic neighbor embedding~\citep{tsne-paper}. It consists of computing probabilities $p_{ij}$ for all pair of points, based on their distances. Then, similarity measures $q_{ij}$ are computed for each pair of points $(y_i, y_j) \in Y^2$, and the goal is to rearrange the map points in such a way that $p_{ij} \approx q_{ij}$ for all pairs of points.
+
+Given two points $x_i, x_j \in X$, their associated conditional probability is computed as
+\begin{equation}
+\label{eq:p_ji_sne}
+	p_{j\|i} =
+	\begin{cases}
+	\frac{exp \big(\frac{-\| x_i - x_j\|^2}{2\sigma_i^2}\big)}
+	{\sum\limits_{k \neq i} exp \big(\frac{-\| x_i - x_k\|^2}{2\sigma_i^2}\big)} & \text{, if } i \neq j\\
+	0 & \text{, otherwise.}
+	\end{cases}
+\end{equation}
+In other words, the conditional probability $p_{j\|i}$ is based on the distance between $x_i$ and $x_j$ weighted by a Gaussian centered at $x_i$ with variance $\sigma_i$. The value of $\sigma_i$ is higher in regions with low density of points and lower in dense regions. It is computed based on a parameter called perplexity, defined as $2^{H_i}$, where $H_i = -\sum\limits_j p_{j\|i} \log_2 p_{j\|i}$.
+
+Finally, the actual probability is computed considering both combinations of points:
+\begin{equation}
+	\label{eq:p_ij_tsne}	
+	p_{ij} = \frac{p_{i\|j} + p_{j\|i}}{2n},
+\end{equation}
+which makes the function symmetric and the gradient faster to compute.
+
+The similarity measures of the map points are computed in an analogous fashion, but using a Student-t distribution with one degree of freedom:
+\begin{equation}
+	\label{eq:q_ij_tsne}
+	q_{ij} =
+	\begin{cases}
+	\frac{(1 + \| y_i - y_j\|^2)^{-1}}
+	{\sum\limits_{k \neq \ell} (1 + \| y_k - y_\ell\|^2)^{-1}} & \text{, if } i \neq j\\
+	0 & \text{, otherwise.}
+	\end{cases}
+\end{equation}
+The main advantage of using a Student-t distribution is that, since it has heavier tails than a Gaussian distribution, it assigns higher distances to points that are not very close. This is important because since $Y$ is embedded in a space with lower dimension compared to $X$, a bigger area is needed to accommodate the points.
+
+\subsubsection{Computation of Map Points}
+
+To approximate the values of $q_{ij}$ to $p_{ij}$ a minimization problem is solved. The points of $Y$ are initialized at random following a normal distribution with very small variance, and updated iteratively using a gradient descent procedure that minimizes the sum of Kullback-Leibler divergences
+\begin{equation}
+	\label{eq:c}
+	\sum\limits_{i} \sum\limits_{j} p_{ij} \log \frac{p_{ij}}{q_{ij}}
+\end{equation}
+over the points. If this process is repeated for a sufficient number of iterations (set to 300 in this paper), the relative distance of any pair of points $(y_i, y_j) \in Y$ should approximate the relative distance of their respective points $(x_i, x_j) \in X$, placing points with similar features close each other in the low-dimensional space.
+
+We highlight that other projection algorithms are available, e.g. UMAP~\citep{umap-paper}, and many more. In principle any projection technique could be used, however we are restricting the discussion in this paper to the t-SNE since it yielded the best results in our experiments.
+
+
+\subsection{Silhouette for clusters evaluation}
+
+In a multiclass clustering problem the goal is to achieve an arrangement where points from a given class are positioned as closely as possible, while also as separated as possible from points from other classes.
+
+The Silhouette Score (SS)~\citep{rousseeuw-silhouette} is a metric that quantifies objectively the intra class conciseness and extra class separation, for a given set of points. This metric will be used alongside our subjective visual assessments to judge the obtained clusters.
+
+More formally, suppose that $x_i \in X$ is a point from a class $A \subset X$, in which all points have the same label as $x_i$. Then
+\begin{equation}
+a(x_i) = \frac{ \sum\limits_{x_j \in A, x_j \neq x_i} || x_i - x_j || }{|A| - 1}
+\end{equation}
+%with $d(x_i, x_j)$ as the Euclidean distance between points $x_i$ and $x_j$,
+denotes the average distance of $x_i$ to the other elements of $A$. 
+For any other class $C \neq A$, $C \subset X$
+\begin{equation}
+d(x_i, C) = \frac{\sum\limits_{x_j \in C} || x_i - x_j || }{|C|}
+\end{equation}
+denotes the average distance between all elements of $C$ to $x_i$. Then,
+\begin{equation}
+b(x_i) = \min\limits_{C \neq A} d(x_i, C)
+\end{equation}
+consists of the average distance of $x_i$ to the closest cluster that it does not belong to.
+
+Using both the values $a(x_i)$ and $b(x_i)$, the silhouette of $x_i$ can be defined as
+\begin{equation}
+\label{eq:silhouette}
+s(x_i) = \frac{b(x_i) - a(x_i)}{\max\{a(x_i), b(x_i)\}}.
+\end{equation}
+
+It can be proven that $-1 \leq s(x_i) \leq 1$ for any $x_i \in X$. Moreover, a positive silhouette score implies that $b(x_i)$ is bigger than $a(x_i)$, implying that $x_i$ is closer to points of $A$ than to points of any other class. Conversely, if the silhouette is negative, then the average distance from $x_i$ to points of another class is smaller than the average to its distance to the points of $A$. Therefore, silhouette scores close to $1$ (or, more mildly, positive) suggest a class which points are well separated from points from other classes, while scores close to $-1$ (or negative) suggest that $x_i$ belongs to a class that was difficult to arrange in an isolated cluster.
+
+
+
+\section{Experiments and Results}
+
+
+% Architectures
+
+\begin{figure*}[htb]
+\centerline{\includegraphics[width=\textwidth]{figs/kk_mob4_vgg4_irn4.png}}
+\caption{MobileNet (left) versus VGG (middle) versus InceptionResNet (right). Training and projection using the Kaggle dataset. Last convolutional layer from all architectures used as features.}
+\label{fig:kk_mob4_vgg4_irn4}
+\end{figure*}
+
+Since each neural network architecture process information in a distinct fashion, the first point of our investigation tackled how that would influence the projections and clusters. The first experiment consisted in training the three aforementioned architectures using a subset\footnote{14374 images unevenly distributed in 38 classes.}~\citep{zheng-paper-kaggle} of the Kaggle\footnote{\url{https://www.kaggle.com/c/datasciencebowl}} plankton dataset. For all the architectures the training started with ImageNet\footnote{\url{https://image-net.org/index}} weights; the last 40\% of the layers were set to be fine-tuned for 100 epochs, while the first 60\% layers were kept frozen. The training was done using 60\% of the images from each class of the Kaggle dataset, while 20\% of the images were used for validation. Due to early stopping, the actual training lasted 35, 29, and 38 epochs, respectively, for the MobileNet, VGG and InceptionResNet. The remaining 20\% of images from the Kaggle dataset were used for the projections: for each architecture, each test image was fed to the neural network; features 
+%\footnote{The outputs (feature maps) from the last convolutional layer in a given architecture usually carry the more refined information learned from a specific training set.}
+from the last convolutional layer\footnote{1280 features from the MobileNetV2, 512 features from the VGG19 and 1536 features from the InceptionResNetV2.} were then reduced to 2D by the t-SNE and the plot of the projection was generated. The plots are shown in Fig.~\ref{fig:kk_mob4_vgg4_irn4}.
+
+Firstly, it is important to emphasize that due to the random nature of the t-SNE algorithm, the same classes not necessarily appear at the same places in the projections. The colors and labels for each class are, however, consistent over the figures.
+
+Among the 3 architectures, a quick glance reveals that the InceptionResNet produced more isolated clusters, namely, those on the border of the arrangement. MobileNet and VGG did produce some isolated clusters, but the fuzzy regions are more pronounced than that in the InceptionResNet plot. In order to objectively quantify this perception, we compute the overall silhouette score (SS) as the average over individual class scores. While the individual scores inform the conciseness and isolation of each specific class in the projection, usually we are interested in the overall score, which might convey an objective metric for the visual first impression. Such a score can be interpreted as an indication of how easy would it be to manually separate the clusters, similar to that first impression we have when a spillikin game is set. Among MobileNet and VGG there seems to be a draw when evaluated subjectively, although the SS of 0.2202 for MobileNet and 0.2606 for VGG suggest a slightly better performance for the VGG. The SS for InceptionResNet was 0.3617 in this case, confirming the better subjective impression. Thus we set InceptionResNet as the base for the remaining experiments.
+
+Notice that experiments using the same dataset for training and testing emulate the scenario where more data is collected using the same equipment in a similar environmental condition (e.g. water turbidity). On the other hand, cross-dataset experiments emulate the scenario where a different imaging equipment was used and/or the environmental conditions changed.
+
+\begin{figure*}[htb]
+\centerline{\includegraphics[width=\textwidth]{figs/study4cases.png}}
+\caption{InceptionResNet trained with the Kaggle dataset and projections of the Kaggle dataset (top panels) and of the WHOI-ASLO dataset (bottom panels). Right panels show projections using features from the last convolutional layer; left panels show projections using features from an earlier convolutional layer.}
+\label{fig:study4cases}
+\end{figure*}
+
+Since different layers in a given architecture learn different levels of information, our second inquiry point consisted on investigating how the depth of a layer in a neural network would influence the clusters produced in the projections. For this second set of experiments the InceptionResNet already trained with the Kaggle dataset was used. Two specific layers were chosen from the InceptionResNet: the aforementioned one (1536 features), and another (2080 features) located in the exact middle of the last convolutional stack\footnote{For a detailed view of the InceptionResNetV2 architecture we refer the interested reader to an elucidative diagram from a post in the Google AI Blog at \url{https://ai.googleblog.com/2016/08/improving-inception-and-image.html}} (therefore, a less deep layer). Besides the aforementioned dataset, the WHOI-ASLO~\citep{sosik-paper} dataset\footnote{6600 images evenly distributed over 22 classes.} was also used for the projections, to elucidate the pipeline's performance on different distributions coming from the same image domain\footnote{For a better appreciation of the cross dataset challenge the reader can check samples from both datasets, already presented in Figure~\ref{fig:datasets}.}. For each dataset, one projection using each of the chosen layers was generated and they are shown in Fig.~\ref{fig:study4cases}.
+
+
+%============================
+
+\begin{figure*}[htb]
+\centerline{\includegraphics[width=\textwidth]{figs/use4cases.png}}
+\caption{An actual visual interactive labelling scenario. Top left panel shows a projection with all points in black, since the labels are not there yet. Top right panels show the actual images instead of the points, at the same positions; selections for 2 regions (in green and red), to be inspected in more detail with magnification, are also depicted. Bottom panels show zoom around the red selection (left), highlighting a dense region with fuzzy clusters, and around the green selection (right), highlighting a sparse region with clean clusters separation.}
+\label{fig:use4cases}
+\end{figure*}
+
+Considering the projections for the Kaggle dataset (top panels), the subjective impression immediately (although arguable) tell us that the projection in the top right panel is nicer than the one in the top left panel for the task of manually segregating the samples in groups. The SSs of 0.3617 (last layer) versus a 0.3307 (intermediate layer) confirm that when dealing with the same dataset used for both training and projections, the later layers provide more discriminative features. When considering a different dataset for the projection (bottom panels), however, the bottom left panel clearly suggests that features from the intermediate layer produces nicer cluster structures, with an SS of 0.3492 against an SS of 0.1191 for the case using features from the last layer (bottom right panel), which also confirms the visual impression. Actually these results were expected, since the earlier layers in a model are not as specialized (for a specific dataset) as the later layers. Therefore when dealing with a cross-dataset situation a better generalization is achieved with the earlier layer case.
+
+Another issue one usually faces in practice is a situation where rare or unknown species, absent in the training dataset, are observed. Since the WHOI-ASLO dataset contains some species that are not present in the Kaggle dataset, the aforementioned experiment (cross-datasets) yields indications that the combination of pre-trained deep neural networks with t-SNE projection would also serve to reveal novel class instances. % is able to cope with such a case and generalize to novel forms not present during training.
+
+Finally, despite using labelled datasets for the experiments, we emphasize that a real use case will not exhibit coloured points, since the dataset is yet to be labelled. A user would see a map like the one at the top left of {\bf Figure~\ref{fig:use4cases}}. Besides interacting with point sets only, it might be interesting to explore the dataset with the possibilities of switching maps between points and the actual images to be annotated, as shown in the others plots in the figure. That would enable users to take into consideration not only the spatial information of the samples in the projection map (points close to each other are still a first indication of grouping), but also the object shapes as they provide strong visual cues which can further highlight well formed clusters or fuzzy regions. In this context, zooming in (as highlighted in Figure~\ref{fig:use4cases}) is a very important instrument, so the user can further explore a particular subset of objects and detect outliers, mispositioned samples, and better scrutinize fuzzy regions.
+
+
+
+\section{Conclusion}
+
+In this paper we presented and discussed a combined use of features extracted from a set of images using CNNs and projection of the features in a 2D plane using the t-SNE algorithm. We compared projections of features extracted with distinct CNN models and, for the use case considered in this work (plankton images), the InceptionResNet architecture provided the best projection maps regarding how well cluster-like structures are apparent. Regarding the choice of the layer in the networks from which features are extracted, we found that when projecting data of the same dataset used in training, last layers produce better visual maps, as expected. However, when projecting data from a distinct dataset, one should prefer earlier layers of the network, where the features are not so specialized.
+
+Another interesting finding is that the subjective perception we (authors) had about the projection maps were consistent with the silhouette score that measures how well clustered are data points of multiple classes. This means that, when choosing CNN models or layers from which features will be extracted in a unlabelled data scenario (thus no possibilities of computing the silhouette score), a good strategy might be to rely on visual perception.
+
+The projection experiments we described also cover real use situations such as samples of a novel class (not seen before) and distribution shift (for example, data collected under different environmental conditions or imaging equipment).
+
+The investigations performed in this study contribute, therefore, with practical aspects that are relevant when envisaging an interactive visual image labelling system. Although the study was performed using plankton images, the general ideas can be applied to image datasets of any other domain. Our results indicate the potential of the combined use of deep neural networks and t-SNE as a core processing kernel for an interactive visual labelling system. As future work, we plan to implement a prototype interactive visual labelling tool based on this combination.
+
+
+%With such a projection and with the aid of a graphical user interface, a human in the loop is able to manually separate the samples in classes, in the spirit of the spillikin game: start with the unwoven sticks (isolated clusters) and proceed with increasing care towards the fuzzier.
+
+%Several neural networks architectures were compared. The economical tricks from the MobileNet and the concise procedure of the VGG could not capture the complicated plankton forms. The InceptionResNet architecture holistic approach, that considers different kernel sizes and residual connections was better equipped for the task and should therefore be prioritized in the plankton context.
+
+%Different depth layers were evaluated. Depending on the forms involved in the usage scenario, a specific layer, or even a combination of layers, should be chosen to provide features. In general, if the user needs to inspect or label a new dataset from the same distribution as the training dataset, using features from the last convolutional layer or any of the late layers is preferred. In the case of working with samples from new distributions, earlier layers will probably yield better clusters, since they are not overfitted to the training context.
+
+%We emphasize that some classes present in the WHOI-ASLO dataset are not present in the Kaggle dataset. Even so, the framework is able to generalize to those new forms. This is not only useful in cross datasets situations, but also in the case of finding rare or unknown species.
+
+%This work explored the context of plankton image labelling, but our system is also prone to other applications and contexts. We are currently working on the development of a graphical user interface to enable in practice the interactive part of the process.
+
+
+
+
+
+
+
+
+
+
+
+
+\backmatter
+
+\bmhead{Supplementary information}
+
+If your article has accompanying supplementary file/s please state so here. 
+
+Authors reporting data from electrophoretic gels and blots should supply the full unprocessed scans for key as part of their Supplementary information. This may be requested by the editorial team/s if it is missing.
+
+Please refer to Journal-level guidance for any specific requirements.
+
+\bmhead{Acknowledgments}
+
+The present work happens within the context of a transnational project, \textit{World Wide Web of Plankton Image Curation} (WWW.PIC), led by Jean-Olivier Irisson from Sorbonne Université. The authors would like to thank the whole WWW.PIC team for fruitful discussions and support. This work is supported by The São Paulo Research Foundation (FAPESP), Grant 2018/24167-5,  Grant 2020/15170-2 and Grant 2021/02902-8.
+
+%\section*{Declarations}
+%
+%Some journals require declarations to be submitted in a standardised format. Please check the Instructions for Authors of the journal to which you are submitting to see if you need to complete this section. If yes, your manuscript must contain the following sections under the heading `Declarations':
+%
+%\begin{itemize}
+%\item Funding
+%\item Conflict of interest/Competing interests (check journal-specific guidelines for which heading to use)
+%\item Ethics approval 
+%\item Consent to participate
+%\item Consent for publication
+%\item Availability of data and materials
+%\item Code availability 
+%\item Authors' contributions
+%\end{itemize}
+%
+%\noindent
+%If any of the sections are not relevant to your manuscript, please include the heading and write `Not applicable' for that section. 
+
+\begin{appendices}
+
+\section{Section title of first appendix}\label{secA1}
+
+An appendix contains supplementary information that is not an essential part of the text itself but which may be helpful in providing a more comprehensive understanding of the research problem or it is information that is too cumbersome to be included in the body of the paper.
+
+%%=============================================%%
+%% For submissions to Nature Portfolio Journals %%
+%% please use the heading ``Extended Data''.   %%
+%%=============================================%%
+
+%%=============================================================%%
+%% Sample for another appendix section			       %%
+%%=============================================================%%
+
+%% \section{Example of another appendix section}\label{secA2}%
+%% Appendices may be used for helpful, supporting or essential material that would otherwise 
+%% clutter, break up or be distracting to the text. Appendices can consist of sections, figures, 
+%% tables and equations etc.
+
+\end{appendices}
+
+%%===========================================================================================%%
+%% If you are submitting to one of the Nature Portfolio journals, using the eJP submission   %%
+%% system, please include the references within the manuscript file itself. You may do this  %%
+%% by copying the reference list from your .bbl file, paste it into the main manuscript .tex %%
+%% file, and delete the associated \verb+\bibliography+ commands.                            %%
+%%===========================================================================================%%
+
+\bibliography{sn-bibliography}% common bib file
+%% if required, the content of .bbl file can be included here once bbl is generated
+%%\input sn-article.bbl
+
+%% Default %%
+%%\input sn-sample-bib.tex%
+
+\end{document}
