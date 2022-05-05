@@ -53,7 +53,8 @@
 
 \begin{document}
 
-\title[Image Annotation Tool]{IAT: a deep learning based system for interactive annotation of image datasets}
+\title[aaa]{A machine-learning-based graphical tool for interactive labeling of plankton image datasets}
+%\title[aaa]{Quick interactive labeling of plankton image datasets with a machine-learning-based graphical tool}
 
 \author*[1]{\fnm{Antonio} \sur{Goulart}}\email{antonio.goulart@usp.br}
 
@@ -73,7 +74,7 @@
 %% sample for unstructured abstract %%
 %%==================================%%
 
-\abstract{In this paper we present a system for interactive annotation of image datasets. The main use cases with such a tool are labeling of raw datasets and inspection of labels from previously annotated datasets. The system is based on a deep learning pipeline to extract high-dimensional feature maps from the images and a subsequent dimensionality reduction stage so the images can be represented as points in a 2D projection and as piecewise linear curves in a parallel coordinates representation. Similar images (therefore, possibly from a same class) will form clusters in the 2D projection while also presenting similar patterns in the curves. A graphical user interface was designed to enable a user to manually select batches of samples, scrutinize and filter the selection, and finally label the batches in a quick fashion. This process is repeated until all the samples are labeled (or corrected, in the case of an inspection). In order to assess the user experience we perform study cases with plankton image datasets, tackling both the labeling and the inspection cases. Highlights of the development process of the system will be detailed, such as comparisons of the 2D projections achieved using different configurations for the system (convolutional neural network architectures, deepness of layers chosen as feature maps, (dis)similarity of datasets used for training and labeling/inspection). The comparisons explore the silhouette score, which considers the inter- and intra-class distances and can be used as an indication of ease of interaction with the system.}
+\abstract{In this paper we present a system for interactive annotation of image datasets. The main use cases with such a tool are labeling of raw datasets and inspection of labels from previously annotated datasets. The system is based on a deep learning pipeline to extract high-dimensional feature maps from the images and a subsequent dimensionality reduction stage so the images can be represented as points in a 2D projection and as piecewise linear curves in a parallel coordinates representation. Similar images (therefore, possibly from a same class) will form clusters in the 2D projection while also presenting similar patterns in the curves. A graphical user interface was designed to enable a user to manually select a batch of samples, scrutinize and filter the selection, and finally label the batch in a quick fashion. This process can be repeated until all the samples are labeled (or corrected, in the case of an inspection). In order to assess the user experience we perform study cases with plankton image datasets, tackling both the labeling and the inspection cases. Highlights of the development process of the system will be detailed by making comparisons of the 2D projections achieved using different configurations for the system (convolutional neural networks architectures, deepness of layers chosen as feature maps, and (dis)similarity of datasets used for training and labeling/inspection). The silhouette score, which considers the inter- and intra-class distances between the points in each projection is used as a metric for the comparisons.}
 
 %%================================%%
 %% Sample for structured abstract %%
@@ -87,7 +88,7 @@
 % 
 % \textbf{Conclusion:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.}
 
-\keywords{Deep learning, Visual interactive labeling, Dataset annotation}
+\keywords{Machine learning, Visual interactive labeling, Dataset annotation}
 
 %%\pacs[JEL Classification]{D8, H51}
 
@@ -120,6 +121,27 @@ Next we present the methods employed in this study ...
 In the design process we investigated if the choice of a DNN architecture or of a specific layer of the network for feature extraction should be a concerning issue. If so, how can one decide which is most suited? We also have a particular interest in investigating how well objects of a new class, not present in the network training set, or objects of another dataset (i.e., same domain, but distinct distribution) will be projected. The quality of the projections, i.e., how easy it is to interact with the set of projected data points from a user point of view is a relevant question. In this regard, we propose to investigate the relation between subjective assessment (authors personal impression) and the objective index known as silhouette score~\citep{rousseeuw-silhouette}.
 
 , including a brief description of deep learning architectures, t-SNE projection, and silhouette score, followed by the experiments with results and discussions, and the conclusions at the end.
+
+%%%%%%%%%%%%%%%
+
+some platforms offer a gamified version of an otherwise tedious task [], however the throughput might not be enough for timely labeilng of large datasets
+
+crowdsourcing platforms like Amazon Mechanical Turk [] provides a ... scalable ... 24/7 ... which might be fast and cheap, but of questionable quality [] ...
+
+a better solution, at least for dealing with a bulk of images in a scientific context might rely on some kind of feature extraction coupled to some sort of dimensionality reduction technique ... in such a way clusters might facilitate the interaction ...
+
+examples of such systems are ...
+
+our work, although following a similiar line, can be considered a more refined version ... mix of several consolidated machine learning techniques, especially the deep learning feature extraction ... since deep learning tools proved to be pwerfull ...
+
+beyond that, the full python implementation provides a cross-platform ...
+
+in the plankton image context ...
+
+%%%%%%%%%%%%%%%
+
+
+
 
 
 \section{Methods}
